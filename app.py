@@ -1,1 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from finance_app import app, routes
+
+if __name__ == '__main__':
+    app.run(debug = True)
