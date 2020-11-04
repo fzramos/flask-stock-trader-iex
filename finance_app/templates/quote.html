@@ -4,6 +4,16 @@
 
 {% block body %}
 
-    <h1>Get a quote for a stock price</h1>
+    <div class="container">
+        <h1>Get a quote for a stock's current price</h1>
+        <form action="" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.symbol.label }}
+                {{ form.symbol(class = "form-control", placeholder = "Ex. AAPL") }}
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+    </div>
 
 {% endblock %}

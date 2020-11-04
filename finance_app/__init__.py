@@ -15,6 +15,6 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 login_manager = LoginManager(app)
-login_manager.login_view = 'login' #Specifies waht page to load for NON-authenticated users
+# login_manager.login_view = 'register' #Specifies waht page to load for NON-authenticated users
 
 from finance_app import routes, models

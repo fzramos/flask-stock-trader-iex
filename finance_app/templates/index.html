@@ -4,6 +4,36 @@
 
 {% block body %}
 
-    <h1>LOGIN</h1>
+    <h1>HOME</h1>
+    <div class="container">
+        <table class="table table-stripped table-dark">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Symbol</th>
+                <th scope="col">Name</th>
+                <th scope="col">Shares</th>
+                <th scope="col">Price</th>
+                <th scope="col">TOTAL  </th>
+              </tr>
+            </thead>
+            <tbody>
+            <!-- Put a for loop for every row of suer CURRENT STOCKS
+            one row needs to check api for current price -->
+              <!-- <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+                <td>Mark</td>
+              </tr> -->
+              <tr>
+                <th scope="row">CASH</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>${{ current_user.cash_cent/100 }}</td>
+              </tr>
+            </tbody>
+          </table>
 
 {% endblock %}

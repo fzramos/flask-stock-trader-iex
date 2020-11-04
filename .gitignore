@@ -3,3 +3,4 @@
 finance_env
 .vscode
 migrations
+app.db

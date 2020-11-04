@@ -21,7 +21,7 @@ class User(db.Model, UserMixin):
     # cash_cent DEFAULT 1000000
 
     # relationships
-    transact_id = db.relationship('transact', backref='owner', lazy = True)
+    transact_id = db.relationship('Transact', backref='owner', lazy = True)
 
     def __init__(self, username, password):
         self.username = username
@@ -43,7 +43,7 @@ class Company(db.Model):
     name = db.Column(db.String(150), nullable = False)
 
     # relationships
-    company_id = db.relationship('Company', backref='company', lazy = True)
+    transact_id = db.relationship('Transact', backref='business', lazy = True)
 
     def __init__(self, username, password):
         self.username = username
@@ -69,8 +69,8 @@ class Transact(db.Model):
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable = False)
 
     # relationships
-    user = db.relationship('User', foreign_keys='Transact.user_id')
-    company = db.relationship('Company', foreign_keys='Transact.company_id')
+    # user = db.relationship('User', foreign_keys='Transact.user_id')
+    # company = db.relationship('Company', foreign_keys='Transact.company_id')
 
     def __init__(self, shares, price_each_cent, time, company_id, user_id):
         self.shares = shares
