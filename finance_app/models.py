@@ -45,16 +45,12 @@ class Company(db.Model):
     # relationships
     transact_id = db.relationship('Transact', backref='business', lazy = True)
 
-    def __init__(self, username, password):
-        self.username = username
-        self.hash = self.set_password(password)
-        # self.cash_cent = cash_cent
+    def __init__(self, symbol, name):
+        self.symbol = symbol
+        self.name = name
 
-    def set_password(self, password):
-        return generate_password_hash(password)
-
-    def __repr__(self):
-        return f'{self.username} has been created with {self.cash_cent/100}.'
+    # def __repr__(self):
+    #     return f'{self.username} has been created with {self.cash_cent/100}.'
 
 
 class Transact(db.Model):
