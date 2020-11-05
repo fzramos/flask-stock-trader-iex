@@ -41,3 +41,117 @@ CREATE TABLE user (
   cash_cent DEFAULT 1000000
 );
 
+session.query(
+    Expense.date,
+    func.sum(Expense.value).label('total')
+).join(Expense.cost_center
+).filter(CostCenter.id.in_([2, 3])
+).group_by(Expense.date
+).all()
+
+db.session.query(
+  Transact.business.symbol,
+  Transact.business.name,
+  func.sum(Transact.shares),
+  Transact.business.symbol,
+).group_by(Transact.shares
+).all()
+
+Transact.query(
+  Transact.business.symbol,
+  Transact.business.name,
+  func.sum(Transact.shares),
+  Transact.business.symbol,
+).group_by(Transact.shares
+).all()
+
+Transact.query(
+  Transact.business.symbol,
+  Transact.business.name,
+  func.sum(Transact.shares),
+).group_by(Transact.shares
+).all()
+
+Transact.query(
+  func.sum(Transact.shares),
+).group_by(Transact.shares
+).all()
+
+works
+base_query = db.session.query(
+    Transact.company_id,
+    func.sum(Transact.shares)
+).group_by(Transact.company_id
+)
+
+doesn't  work
+base_query = db.session.query(
+    Transact.business.name,
+    func.sum(Transact.shares)
+).join(Transact.company_id
+).group_by(Transact.company_id
+)
+
+SELECT company.symbol, company.name, SUM(transact.shares)
+FROM transact
+INNER JOIN company
+ON transact.company_id = company.id
+WHERE transact.user_id = 1
+GROUP BY transact.company_id;
+
+.filter(CostCenter.id.in_([2, 3])
+
+base_query = db.session.query(
+    Company.name,
+    func.sum(Transact.shares)
+).join(Transact.business
+).filter(Transact.user_id == 1
+).group_by(Transact.company_id
+).all()
+
+base_query = db.session.query(
+    func.sum(Transact.shares)
+).join(Transact.business
+).filter(Transact.user_id == 1
+).group_by(Transact.company_id
+).all()
+
+base_query = db.session.query(
+    Company.symbol,
+    Company.name,
+    func.sum(Transact.shares).label('shares_sum')
+).join(Transact.business
+).filter(Transact.user_id == 1
+).group_by(Transact.company_id
+).all()
+WORKING IN FLASK SHELL!!!
+
+
+base_query = db.session.query(
+    Company.symbol,
+    Company.name,
+    func.sum(Transact.shares).label('shares_sum')
+).join(Transact.business
+).filter(Transact.user_id == current_user.id
+).group_by(Transact.company_id
+).all()
+
+HISTORY QUERY
+base_query = db.session.query(
+    Company.symbol,
+    Transact.shares,
+    Transact.price_each_cent,
+    Transact.time
+).join(Transact.business
+).filter(Transact.user_id == 1
+).all()
+WORKS!!
+
+base_query = db.session.query(
+    Company.symbol,
+    Transact.shares,
+    Transact.price_each_cent,
+    Transact.time
+).join(Transact.business
+).filter(Transact.user_id == current_user.id
+).all()

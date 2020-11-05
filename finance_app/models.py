@@ -68,10 +68,10 @@ class Transact(db.Model):
     # user = db.relationship('User', foreign_keys='Transact.user_id')
     # company = db.relationship('Company', foreign_keys='Transact.company_id')
 
-    def __init__(self, shares, price_each_cent, time, company_id, user_id):
+    def __init__(self, shares, price_each_cent, user_id, company_id):
         self.shares = shares
         self.price_each_cent = price_each_cent
-        self.time = time
+        # self.time = time
         self.company_id = company_id
         self.user_id = user_id
 

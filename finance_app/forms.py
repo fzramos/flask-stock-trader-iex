@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, EqualTo, Email
+from wtforms import StringField, PasswordField, SubmitField, IntegerField
+from wtforms.validators import DataRequired, EqualTo, Email, NumberRange
 
 class UserInfoForm(FlaskForm):
     username = StringField('Username', validators = [DataRequired()])
@@ -15,4 +15,9 @@ class LoginForm(FlaskForm):
 
 class QuoteForm(FlaskForm):
     symbol = StringField('Stock Symbol', validators = [DataRequired()])
-    submit = SubmitField()
+    submit = SubmitField('Quote')
+
+class BuyForm(FlaskForm):
+    symbol = StringField('Stock Symbol', validators = [DataRequired()])
+    shares = IntegerField('Shares', validators = [NumberRange(min=0, max=1000)])
+    submit = SubmitField('Buy')

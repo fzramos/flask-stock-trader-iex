@@ -4,6 +4,27 @@
 
 {% block body %}
 
-    <h1>your transaction history</h1>
+<div class="container">
+    <table class="table table-stripped table-dark">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Symbol</th>
+            <th scope="col">Shares</th>
+            <th scope="col">Price</th>
+            <th scope="col">Transacted</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for tran in transactions %}
+          <tr>
+            <th scope="row">{{ tran.symbol }}</th>
+            <td>{{ tran.shares }}</td>
+            <td>${{ tran.price_each_cent/100 }}</td>
+            <td>{{ tran.time }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
 {% endblock %}
