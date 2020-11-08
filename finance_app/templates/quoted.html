@@ -3,7 +3,8 @@
 {% include 'nav_postlog.html' %}
 
 {% block body %}
-
-    <h1>The current price of {{ company.name }}, {{ company.symbol }} that stock is ${{ price }}</h1>
+    <div class="container">
+        <h1>The current price of {{ company.name }}, {{ company.symbol }} that stock is ${{ "{0:0.2f}".format(price) }}</h1>
+    </div>
 
 {% endblock %}

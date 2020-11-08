@@ -19,7 +19,7 @@
           <tr>
             <th scope="row">{{ tran.symbol }}</th>
             <td>{{ tran.shares }}</td>
-            <td>${{ tran.price_each_cent/100 }}</td>
+            <td>${{ "{0:0.2f}".format(tran.price_each_cent/100) }}</td>
             <td>{{ tran.time }}</td>
           </tr>
         {% endfor %}

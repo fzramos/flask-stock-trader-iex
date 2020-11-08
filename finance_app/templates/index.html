@@ -4,8 +4,9 @@
 
 {% block body %}
 
-    <h1>HOME</h1>
+    
     <div class="container">
+      <h1>Your Portfolio</h1>
         <table class="table table-stripped table-dark">
             <thead class="thead-dark">
               <tr>
@@ -22,8 +23,8 @@
                 <th scope="row">{{ key }}</th>
                 <td>{{ value['name'] }}</td>
                 <td>{{ value['shares_sum'] }}</td>
-                <td>${{ value['price'] }}</td>
-                <td>${{ value['total_price'] }}</td>
+                <td>${{ "{0:0.2f}".format(value['price']) }}</td>
+                <td>${{ "{0:0.2f}".format(value['total_price']) }}</td>
               </tr>
             {% endfor %}
               <tr>

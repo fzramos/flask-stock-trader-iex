@@ -10,7 +10,6 @@ CREATE TABLE transact (
 
 INSERT INTO transact (company_id, user_id, shares, price_each_cent) VALUES (1, 1, 3, 200);
 
-
 INSERT INTO transact (company_id, user_id, shares, price_each_cent) VALUES (1, 1, 6, 300);
 
 INSERT INTO transact (company_id, user_id, shares, price_each_cent) VALUES (1, 1, -8, 400);
@@ -125,8 +124,20 @@ base_query = db.session.query(
 ).group_by(Transact.company_id
 ).all()
 WORKING IN FLASK SHELL!!!
+PROBLEM: ALSO RETURNS USER'S COMAPNIES WITH 0 SHARES (SHARES THEY BOUGHT A FULLY SOLD OF)
 
+WORKING IN FLASK SHELL!! WITHOUT INCLUDING 0'S!
+base_query = db.session.query(
+    Company.symbol,
+    Company.name,
+    func.sum(Transact.shares).label('shares_sum')
+).join(Transact.business
+).filter(Transact.user_id == 1
+).group_by(Transact.company_id
+).having(func.sum(Transact.shares) > 0
+).all()
 
+BUY QUERY
 base_query = db.session.query(
     Company.symbol,
     Company.name,
@@ -134,8 +145,18 @@ base_query = db.session.query(
 ).join(Transact.business
 ).filter(Transact.user_id == current_user.id
 ).group_by(Transact.company_id
+).having(func.sum(Transact.shares) > 0
 ).all()
 
+----
+KEY FLASK SHELL NOTE: IF you have lazy connections between tables
+These queries wont work at first, must establish that connections
+These work in normal flask app without this weird work around
+to connect the lazy connections, just do:
+> user1 = User.query.get(1)
+> user1.business.name
+and thats all!
+-----
 HISTORY QUERY
 base_query = db.session.query(
     Company.symbol,

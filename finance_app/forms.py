@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField, SelectField
 from wtforms.validators import DataRequired, EqualTo, Email, NumberRange
 
 class UserInfoForm(FlaskForm):
@@ -21,3 +21,9 @@ class BuyForm(FlaskForm):
     symbol = StringField('Stock Symbol', validators = [DataRequired()])
     shares = IntegerField('Shares', validators = [NumberRange(min=0, max=1000)])
     submit = SubmitField('Buy')
+
+class SellForm(FlaskForm):
+    symbol = SelectField('Symbol', choices = [], validators = [DataRequired()])
+    shares = IntegerField('Shares', validators = [NumberRange(min=0, max=1000)]) 
+    # if symbol dynamic works seee if validators dynamic works to change its max
+    submit = SubmitField('Sell')

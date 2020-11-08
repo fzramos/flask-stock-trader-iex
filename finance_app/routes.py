@@ -1,6 +1,6 @@
 from finance_app import app, db
 from flask import render_template, redirect, url_for, request
-from finance_app.forms import UserInfoForm, LoginForm, QuoteForm, BuyForm
+from finance_app.forms import UserInfoForm, LoginForm, QuoteForm, BuyForm, SellForm
 from finance_app.models import User, Company, Transact, check_password_hash
 from flask_login import login_required, login_user, current_user, logout_user
 from iexfinance.stocks import Stock
@@ -30,10 +30,15 @@ def home():
     ).join(Transact.business
     ).filter(Transact.user_id == current_user.id
     ).group_by(Transact.company_id
+    ).having(func.sum(Transact.shares) > 0
     ).all()
 
     portfolio = dict()
     for value in current_stocks:
+        
+        # so stocks that you sold off in the past don't show up
+        # if value.shares_sum <= 0:
+        #     continue
         stock = Stock(value.symbol)
         current_price = stock.get_quote()['latestPrice']
 
@@ -127,18 +132,16 @@ def buy_stock():
         # company = Company.query.filter_by(symbol = symbol)
         company = Company.query.filter(Company.symbol == symbol).first()
         if company:
-            print(1)
+            
             stock = Stock(company.symbol)
             current_price = stock.get_quote()['latestPrice']
             price_each_cent = int(current_price * 100)
             cost_cent = price_each_cent * shares
             if cost_cent > current_user.cash_cent:
-                # return render_template('failure.html', msg = 'no')
                 return render_template('failure.html',\
-                    msg = f'The cost of these shares, {cost_cent / 100} is '\
+                    msg = f'The cost of these shares, "{0:0.2f}".format(cost_cent / 100) is '\
                     + f'more than the cash you have in your account, '\
                     + f'{current_user.cash_cent /100}.')
-                # return redirect('/failure/2')
             current_user.cash_cent -= cost_cent
             user_id = current_user.id
 
@@ -150,16 +153,7 @@ def buy_stock():
             return redirect(url_for('home'))
         else:
             return render_template('failure.html', msg = f'{symbol} is not a recognized stock symbol.')
-            # return redirect('/failure/1')
     return render_template('buy.html', form = form)
-
-# @app.route('/failure/<code>')
-# def failure(code):
-#     codes = {
-#         1: 'Entered Stock Symbol was not recognized',
-#         2: 'The cost of the stocks is greater than the cash in your account'
-#     }
-#     return render_template('failure.html', msg = codes[code])
 
 # history next
 @app.route('/history')
@@ -177,3 +171,59 @@ def history():
     return render_template('history.html', transactions = user_history)
 
 
+@app.route('/sell', methods = ['GET', 'POST'])
+@login_required
+def sell_stock():
+    form = SellForm()
+
+    current_stocks = db.session.query(
+        Company.symbol,
+        Company.id,
+        func.sum(Transact.shares).label('shares_sum')
+    ).join(Transact.business
+    ).filter(Transact.user_id == current_user.id
+    ).group_by(Transact.company_id
+    ).having(func.sum(Transact.shares) > 0
+    ).all()
+
+    portfolio = dict()
+    for value in current_stocks:
+        # be careful!! key positional stuff in dict
+        portfolio[value.symbol] = [value.shares_sum, value.id]
+    
+    # attempting to dynamically add the user's owned stock symbols to the drop down
+    for key in portfolio.keys():
+        form.symbol.choices.append((key, key))
+
+    if request.method == 'POST' and form.validate():
+        sell_sym = form.symbol.data
+        sell_shares = form.shares.data
+
+        if sell_shares <= portfolio[sell_sym][0]:
+
+            # getting company of symbol for company id
+            # maybe make more efficient with backref? since we 
+            # have the symbol, just not id
+            # company = Company.query.filter(Company.symbol == sell_sym).first()
+            company_id = portfolio[sell_sym][1]
+
+            stock = Stock(sell_sym)
+            current_price = stock.get_quote()['latestPrice']
+            price_each_cent = int(current_price * 100)
+            cost_cent = price_each_cent * sell_shares
+            current_user.cash_cent += cost_cent
+            user_id = current_user.id
+
+            transact = Transact(-sell_shares, price_each_cent, user_id, company_id)
+
+            db.session.add(transact)
+            db.session.commit()
+
+            return redirect(url_for('home'))
+        else:
+            return render_template('failure.html',\
+                msg = f'You do not own {sell_shares} shares of {sell_sym}. '\
+                + f'You own {portfolio[sell_sym][0]} {sell_sym} stocks.')
+            render_template('fail')
+
+    return render_template('sell.html', form = form, portfolio = portfolio)
