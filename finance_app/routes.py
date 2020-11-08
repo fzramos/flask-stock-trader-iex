@@ -137,9 +137,10 @@ def buy_stock():
             current_price = stock.get_quote()['latestPrice']
             price_each_cent = int(current_price * 100)
             cost_cent = price_each_cent * shares
+            cost = cost_cent / 100
             if cost_cent > current_user.cash_cent:
                 return render_template('failure.html',\
-                    msg = f'The cost of these shares, "{0:0.2f}".format(cost_cent / 100) is '\
+                    msg = f'The cost of these shares, {cost:.2f}, is '\
                     + f'more than the cash you have in your account, '\
                     + f'{current_user.cash_cent /100}.')
             current_user.cash_cent -= cost_cent
